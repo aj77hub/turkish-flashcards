@@ -1,0 +1,12 @@
+[
+  { "kelime": "elma", "resim": "elma.jpg" },
+  { "kelime": "masa", "resim": "masa.jpg" },
+  { "kelime": "köpek", "resim": "köpek.jpg" },
+  { "kelime": "uçak", "resim": "uçak.jpg" },
+  { "kelime": "çiçek", "resim": "çiçek.jpg" },
+  { "kelime": "telefon", "resim": "telefon.jpg" },
+  { "kelime": "kedi", "resim": "kedi.jpg" },
+  { "kelime": "kitap", "resim": "kitap.jpg" },
+  { "kelime": "balık", "resim": "balık.jpg" },
+  { "kelime": "şemsiye", "resim": "şemsiye.jpg" }
+]
