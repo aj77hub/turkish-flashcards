@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Türkçe Kelime Oyunu</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; padding: 20px; }
+    #game-container { max-width: 900px; margin: auto; }
+    #image-box img { max-height: 300px; margin-bottom: 20px; }
+    #word-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    #scoreboard { margin: 20px 0; font-size: 18px; }
+    #pass-button { background: #e67e22; color: white; border: none; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <h1>Türkçe Kelime Oyunu</h1>
+
+  <div id="scoreboard">
+    ✅ Doğru: <span id="correct">0</span> |
+    ❌ Yanlış: <span id="incorrect">0</span> |
+    ⏱ Süre: <span id="timer">0</span> saniye
+  </div>
+
+  <div id="image-box">
+    <img id="flashcard-image" src="" alt="Kelime Görseli">
+  </div>
+
+  <div id="word-buttons"></div>
+
+  <button id="pass-button">GEÇ</button>
+</div>
+
+<script>
+  let kelimeListesi = []; // Will be filled from JSON
+  let tumKelimeler = [];
+  let currentIndex = 0;
+  let correctCount = 0;
+  let incorrectCount = 0;
+  let seconds = 0;
+
+  const correctSpan = document.getElementById('correct');
+  const incorrectSpan = document.getElementById('incorrect');
+  const timerSpan = document.getElementById('timer');
+  const imageEl = document.getElementById('flashcard-image');
+  const buttonsContainer = document.getElementById('word-buttons');
+
+  let timer = setInterval(() => {
+    seconds++;
+    timerSpan.textContent = seconds;
+  }, 1000);
+
+  fetch('https://raw.githubusercontent.com/aj77hub/turkish-flashcards/refs/heads/main/data.json')
+    .then(response => response.json())
+    .then(data => {
+      kelimeListesi = data;
+      tumKelimeler = kelimeListesi.map(item => item.kelime);
+      shuffleArray(kelimeListesi);
+      loadWord();
+      createButtons();
+    });
+
+  function loadWord() {
+    const current = kelimeListesi[currentIndex];
+    imageEl.src = `images/${current.resim}`;
+  }
+
+  function createButtons() {
+    buttonsContainer.innerHTML = '';
+    tumKelimeler.forEach(word => {
+      const btn = document.createElement('button');
+      btn.textContent = word;
+      btn.onclick = () => handleGuess(word);
+      buttonsContainer.appendChild(btn);
+    });
+  }
+
+  function handleGuess(selectedWord) {
+    const correctWord = kelimeListesi[currentIndex].kelime;
+    if (selectedWord === correctWord) {
+      correctCount++;
+      correctSpan.textContent = correctCount;
+      nextWord();
+    } else {
+      incorrectCount++;
+      incorrectSpan.textContent = incorrectCount;
+    }
+  }
+
+  function nextWord() {
+    currentIndex++;
+    if (currentIndex >= kelimeListesi.length) {
+      clearInterval(timer);
+      alert(`Oyun bitti! ✅ Doğru: ${correctCount}, ❌ Yanlış: ${incorrectCount}`);
+    } else {
+      loadWord();
+    }
+  }
+
+  document.getElementById('pass-button').onclick = () => {
+    nextWord();
+  };
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+</script>
+
+</body>
+</html>
